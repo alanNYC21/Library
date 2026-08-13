@@ -1240,10 +1240,10 @@ Library.ElementBackgrounds = {}            -- internal: tracked images + tints +
 Library.ElementBGImage = ""                -- rbxassetid://... or a getcustomasset() result
 Library.ElementBGTransparency = 0.75       -- 0 = solid image, 1 = fully see-through
 Library.ElementBGTint = true               -- dark base under the image, keeps it from blowing out
-Library.ElementBGEnabled = {               -- per-element on/off, toggle these freely
-    label = true,                          -- the draggable label / watermark
-    keybind = true,                        -- the keybind menu
-    notification = true,                   -- notifications
+Library.ElementBGEnabled = {
+    label = true,  --  watermark / label
+    keybind = true, -- keybind menu lmao
+    notification = true, -- notification shits fixed
 }
 Library.WindowBGTransparency = 0.75        -- main window's BackgroundImage, same scale as above
 
@@ -3039,6 +3039,7 @@ do
             BackgroundColor3 = ColorPicker.Value,
             Size = UDim2.fromOffset(18, 18),
             Text = "",
+            ZIndex = 1000, -- custom mod: above the window BackgroundImage (999)
             Parent = ToggleLabel,
         })
 
@@ -3062,6 +3063,7 @@ do
             Position = UDim2.new(0, -1, 0, -1),
             Size = UDim2.new(1, 2, 1, 2),
             TileSize = UDim2.fromOffset(9, 9),
+            ZIndex = 1000, -- custom mod: keep with the swatch above the BackgroundImage
             Parent = Holder,
         })
 
@@ -3084,6 +3086,46 @@ do
         )
         ColorMenu.List.Padding = UDim.new(0, 8)
         ColorPicker.ColorMenu = ColorMenu
+        ColorMenu.Menu.ZIndex = 1001 -- custom mod: above the window BackgroundImage (999)
+        ColorMenu.Menu.BackgroundTransparency = 1
+
+        -- custom mod: texture behind the panel. Lives beside the menu rather
+        -- than inside it -- the menu runs a UIListLayout, which would lay an
+        -- ImageLabel child out as a list item and shove the controls off.
+        local ColorBackdrop = New("ImageLabel", {
+            Name = "ColorMenuBackdrop",
+            BackgroundColor3 = "BackgroundColor",
+            BackgroundTransparency = 0,
+            Image = Library.ElementBGImage,
+            ImageTransparency = Library.ElementBGTransparency,
+            ScaleType = Enum.ScaleType.Crop,
+            Visible = false,
+            ZIndex = 1000,
+            Parent = ColorMenu.Menu.Parent,
+        })
+        table.insert(
+            Library.Corners,
+            New("UICorner", {
+                CornerRadius = UDim.new(0, Library.CornerRadius / 2),
+                Parent = ColorBackdrop,
+            })
+        )
+
+        ColorMenu.Menu:GetPropertyChangedSignal("Visible"):Connect(function()
+            ColorBackdrop.Visible = ColorMenu.Menu.Visible and Library.ElementBGImage ~= ""
+        end)
+        ColorMenu.Menu:GetPropertyChangedSignal("AbsolutePosition"):Connect(function()
+            ColorBackdrop.Position = UDim2.fromOffset(
+                ColorMenu.Menu.AbsolutePosition.X,
+                ColorMenu.Menu.AbsolutePosition.Y
+            )
+        end)
+        ColorMenu.Menu:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+            ColorBackdrop.Size = UDim2.fromOffset(
+                ColorMenu.Menu.AbsoluteSize.X,
+                ColorMenu.Menu.AbsoluteSize.Y
+            )
+        end)
 
         New("UIPadding", {
             PaddingBottom = UDim.new(0, 6),
@@ -3257,6 +3299,7 @@ do
             return { Holder.AbsoluteSize.X + 1.5, 0.5 }
         end, 1)
         ColorPicker.ContextMenu = ContextMenu
+        ContextMenu.Menu.ZIndex = 1001 -- custom mod: above the window BackgroundImage
         ContextMenu.List.Padding = UDim.new(0, 6)
         do
             local function CreateButton(Text, Func)
