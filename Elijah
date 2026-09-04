@@ -1,11 +1,3 @@
---[[
-	ts modded by
- the man
-elijah
-]]
-
-
-
 
 local cloneref = (cloneref or clonereference or function(instance: any)
     return instance
@@ -3506,18 +3498,11 @@ do
 
         ColorPicker.Default = ColorPicker.Value
 
-        function ColorPicker:SetVisible(Visible)
-            Holder.Visible = Visible
-            if not Visible then
-                ColorMenu:Close()
-                ContextMenu:Close()
-            end
-        end
-
         Options[Idx] = ColorPicker
 
         return self
     end
+
     BaseAddons.__index = Funcs
     BaseAddons.__namecall = function(_, Key, ...)
         return Funcs[Key](...)
@@ -6397,8 +6382,6 @@ function Library:SetNotifySide(Side: string)
         NotificationList.HorizontalAlignment = Enum.HorizontalAlignment.Right
     end
 end
-
- 
 
 function Library:Notify(...)
     local Data = {}
