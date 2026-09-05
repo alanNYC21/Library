@@ -6600,15 +6600,17 @@ do
                 })
             end
 
-			local ButtonLabel = New("TextLabel", {
-			    BackgroundTransparency = 1,
-			    Size = UDim2.new(1, 0, 0, 16),   -- fill the available button width
-			    Text = Name,
-			    TextSize = 15,
-			    TextScaled = true,               -- shrink font to fit inside the button
-			    TextTransparency = 0.5,
-			    Parent = ButtonContent,
-			})
+            local ButtonLabel = New("TextLabel", {
+                BackgroundTransparency = 1,
+                Size = UDim2.new(1, 0, 1, 0),   -- fill the ButtonContent
+                Text = Name,
+                TextSize = 14,
+                TextWrapped = true,             -- allows wrapping to next line
+                TextTransparency = 0.5,
+                TextXAlignment = Enum.TextXAlignment.Center,
+                TextYAlignment = Enum.TextYAlignment.Center,
+                Parent = ButtonContent,
+            })
 
             local Line = Library:MakeLine(Button, {
                 AnchorPoint = Vector2.new(0, 1),
@@ -8329,10 +8331,9 @@ function Library:CreateWindow(WindowInfo)
 
                 local ButtonContent = New("Frame", {
                     AnchorPoint = Vector2.new(0.5, 0.5),
-                    AutomaticSize = Enum.AutomaticSize.X,
                     BackgroundTransparency = 1,
                     Position = UDim2.fromScale(0.5, 0.5),
-                    Size = UDim2.fromOffset(0, 16),
+                    Size = UDim2.new(1, -12, 1, -4),   -- fill the button with small padding
                     Parent = Button,
                 })
                 New("UIListLayout", {
