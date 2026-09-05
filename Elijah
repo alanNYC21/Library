@@ -6484,6 +6484,7 @@ do
                 Parent = Button,
             })
 
+            -- MODIFIED: ButtonContent fills button, uses layout with Fill
             local ButtonContent = New("Frame", {
                 AnchorPoint = Vector2.new(0.5, 0.5),
                 BackgroundTransparency = 1,
@@ -6512,6 +6513,7 @@ do
                     SizeConstraint = Enum.SizeConstraint.RelativeYY,
                     Parent = ButtonContent,
                 })
+                -- Prevent icon from stretching
                 local flex = Instance.new("UIFlexItem")
                 flex.FlexMode = Enum.UIFlexMode.None
                 flex.Parent = ButtonIcon
@@ -7136,10 +7138,6 @@ function Library:CreateWindow(WindowInfo)
     local IsCompact = WindowInfo.SidebarCompacted
     local LastExpandedWidth = InitialLeftWidth
 
-    -- Store original window size for scaling
-    local OriginalWindowWidth = WindowInfo.Size.X.Offset
-    local OriginalWindowHeight = WindowInfo.Size.Y.Offset
-
     do
         Library.KeybindFrame, Library.KeybindContainer = Library:AddDraggableMenu("Keybinds")
         Library.KeybindFrame.AnchorPoint = Vector2.new(0, 0.5)
@@ -7440,7 +7438,6 @@ function Library:CreateWindow(WindowInfo)
                 for _, Tab in Library.Tabs do
                     Tab:Resize(true)
                 end
-                UpdateContentScale()
             end)
         end
 
@@ -7485,24 +7482,6 @@ function Library:CreateWindow(WindowInfo)
             PaddingTop = UDim.new(0, 0),
             Parent = Container,
         })
-
-        -- Add a UIScale to the Container for content scaling
-        local ContainerScale = New("UIScale", {
-            Parent = Container,
-        })
-
-        -- Function to update content scale based on window size
-        local function UpdateContentScale()
-            if not Container or not ContainerScale then return end
-            local currentWidth = MainFrame.Size.X.Offset
-            local currentHeight = MainFrame.Size.Y.Offset
-            local scaleX = currentWidth / OriginalWindowWidth
-            local scaleY = currentHeight / OriginalWindowHeight
-            local scale = math.min(scaleX, scaleY)
-            ContainerScale.Scale = math.max(0.1, scale) -- clamp to avoid too small
-        end
-        UpdateContentScale() -- initial call
-        Window.UpdateContentScale = UpdateContentScale
     end
 
     local Window = {}
@@ -7624,11 +7603,6 @@ function Library:CreateWindow(WindowInfo)
         end
         if not IsCompact then
             LastExpandedWidth = Width
-        end
-
-        -- Update content scale because container width changed
-        if Window.UpdateContentScale then
-            Window.UpdateContentScale()
         end
     end
 
@@ -8243,6 +8217,7 @@ function Library:CreateWindow(WindowInfo)
                     Parent = Button,
                 })
 
+                -- MODIFIED: ButtonContent fills button, uses layout with Fill
                 local ButtonContent = New("Frame", {
                     AnchorPoint = Vector2.new(0.5, 0.5),
                     BackgroundTransparency = 1,
@@ -8271,6 +8246,7 @@ function Library:CreateWindow(WindowInfo)
                         SizeConstraint = Enum.SizeConstraint.RelativeYY,
                         Parent = ButtonContent,
                     })
+                    -- Prevent icon from stretching
                     local flex = Instance.new("UIFlexItem")
                     flex.FlexMode = Enum.UIFlexMode.None
                     flex.Parent = ButtonIcon
