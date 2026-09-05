@@ -7140,9 +7140,6 @@ function Library:CreateWindow(WindowInfo)
     local OriginalWindowWidth = WindowInfo.Size.X.Offset
     local OriginalWindowHeight = WindowInfo.Size.Y.Offset
 
-    -- Define Window table early so we can assign methods inside the do block
-    local Window = {}
-
     do
         Library.KeybindFrame, Library.KeybindContainer = Library:AddDraggableMenu("Keybinds")
         Library.KeybindFrame.AnchorPoint = Vector2.new(0, 0.5)
@@ -7443,7 +7440,7 @@ function Library:CreateWindow(WindowInfo)
                 for _, Tab in Library.Tabs do
                     Tab:Resize(true)
                 end
-                Window:UpdateContentScale()
+                UpdateContentScale()
             end)
         end
 
@@ -7508,7 +7505,7 @@ function Library:CreateWindow(WindowInfo)
         Window.UpdateContentScale = UpdateContentScale
     end
 
-    -- Now add methods to Window
+    local Window = {}
 
     function Window:ChangeTitle(title)
         assert(typeof(title) == "string", "Expected string for title got: " .. typeof(title))
